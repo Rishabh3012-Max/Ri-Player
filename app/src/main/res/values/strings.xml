@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Ri Player</string>
+    <string name="tab_local">Local</string>
+    <string name="tab_network">Network</string>
+    <string name="hint_url">Paste stream URL (http/https/rtsp)</string>
+    <string name="play">Play</string>
+    <string name="no_media">No media files found</string>
+</resources>
