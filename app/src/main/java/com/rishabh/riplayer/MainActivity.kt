@@ -107,8 +107,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        // Covers the case where the user just granted "All files access" in Settings and came back
-        if (hasFullStorageAccess() && videoList.isEmpty() && audioList.isEmpty()) {
+        // Always retry loading if lists are still empty — covers cases where the
+        // "All files access" permission was skipped/denied, so the screen never
+        // stays blank forever. MediaStore-based loading still works without it.
+        if (videoList.isEmpty() && audioList.isEmpty()) {
             loadLocalMedia()
         }
     }
@@ -132,8 +134,13 @@ class MainActivity : AppCompatActivity() {
     private fun showList(list: List<MediaItemData>) {
         adapter = MediaAdapter(list) { item -> playMedia(item.uri, item.title) }
         recyclerView.adapter = adapter
-        findViewById<TextView>(R.id.emptyText).visibility =
-            if (list.isEmpty()) android.view.View.VISIBLE else android.view.View.GONE
+        val emptyText = findViewById<TextView>(R.id.emptyText)
+        if (list.isEmpty()) {
+            emptyText.text = "No media found.\nTap the cast icon (top-right) to play a network URL,\nor add video/audio files to your phone's Movies/Music/Download folder."
+            emptyText.visibility = android.view.View.VISIBLE
+        } else {
+            emptyText.visibility = android.view.View.GONE
+        }
     }
 
     private fun hasFullStorageAccess(): Boolean {
